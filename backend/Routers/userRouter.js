@@ -6,4 +6,8 @@ userRoute
 .get(userControler.getUsers)
 .post(userControler.createUser)
 
+userRoute.route('/:id')
+.get(userControler.getUser)
+
+
 module.exports = userRoute;

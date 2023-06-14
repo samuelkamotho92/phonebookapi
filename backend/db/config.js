@@ -1,9 +1,9 @@
 const confiq = {
-    server:'DESKTOP-KE6NN2R',
+    server:'MCAS',
     database:'phonebook',
     host:"localhost",
     user:'sa',
-    password:'12345678',
+    password:'4FERENG7L3Ma.',
     options: {
         trustedConnection: true,
         encrypt: true,

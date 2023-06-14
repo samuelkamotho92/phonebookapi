@@ -48,8 +48,22 @@ const getUsers = async(req,res)=>{
         })
     }
 }
+
+const getUser = async(req, res) => {
+    const id = req.params.id;
+try {
+    let pool =await sql.connect(confiq);
+    let user1 = await pool.request().input(id, sql.Int, id).query('SELECT * FROM users WHERE id = @id');
+    !user1.recordset[0]? res.status(404).json({message: 'user not found'}): res.status(200).json({status: 'success',
+user: user1.recordset[0]});
+} catch (error) {
+   res.status(404).json({message: error.message}); 
+}
+}
+
 module.exports = 
 {
      createUser,
-     getUsers
+     getUsers,
+     getUser
 }
