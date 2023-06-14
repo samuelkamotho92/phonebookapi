@@ -73,10 +73,23 @@ user: user1.recordset[0]});
    res.status(404).json({message: error.message}); 
 }
 }
-
+const deleteUser = async(req, res) => {
+  const id = req.params.id;
+try{
+await sql.connect(config);
+await sql.query(`DELETE FROM users WHERE id = ${id}` )
+res.status(200).json({
+  status:"success",
+  message:"User deleted successfully"
+})
+}catch(err){
+res.status(400).json(err)
+}
+}
 module.exports = 
 {
      createUser,
      getUsers,
-     getUser
+     getUser,
+     deleteUser
 }
