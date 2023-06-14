@@ -44,24 +44,39 @@ const createUser = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
-  try {
-    let pool = await sql.connect(confiq);
-    const userCreated = await pool.request().query("SELECT * FROM users");
-    console.log(userCreated.recordsets[0]);
-    res.status(200).json({
-      data: userCreated.recordsets,
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "err",
-      err,
-    });
-  } finally {
-    sql.close();
-  }
-};
-module.exports = {
-  createUser,
-  getUsers,
-};
+const getUsers = async(req,res)=>{
+    try{
+        let pool = await sql.connect(confiq);
+        const userCreated = await 
+        pool.request()
+        .query('SELECT * FROM users');
+        console.log(userCreated.recordsets[0]);
+        res.status(200).json({
+            data:userCreated.recordsets
+        })
+    }catch(err){
+        res.status(404).json({
+            status:'err',
+            err
+        })
+    }
+}
+
+const getUser = async(req, res) => {
+    const id = req.params.id;
+try {
+    let pool =await sql.connect(confiq);
+    let user1 = await pool.request().input(id, sql.Int, id).query('SELECT * FROM users WHERE id = @id');
+    !user1.recordset[0]? res.status(404).json({message: 'user not found'}): res.status(200).json({status: 'success',
+user: user1.recordset[0]});
+} catch (error) {
+   res.status(404).json({message: error.message}); 
+}
+}
+
+module.exports = 
+{
+     createUser,
+     getUsers,
+     getUser
+}
