@@ -8,6 +8,9 @@ userRoute
 
 userRoute.route('/:id')
 .get(userControler.getUser)
+.delete(userControler.deleteUser)
 
+userRoute.route('/useGroup/:id')
+.get(userControler.getUsersGroup)
 
 module.exports = userRoute;

@@ -66,7 +66,7 @@ const getUser = async(req, res) => {
     const id = req.params.id;
 try {
     let pool =await sql.connect(confiq);
-    let user1 = await pool.request().input(id, sql.Int, id).query('SELECT * FROM users WHERE id = @id');
+    let user1 = await pool.request().input('id', sql.Int, id).query('SELECT * FROM users WHERE id = @id');
     !user1.recordset[0]? res.status(404).json({message: 'user not found'}): res.status(200).json({status: 'success',
 user: user1.recordset[0]});
 } catch (error) {
@@ -76,7 +76,7 @@ user: user1.recordset[0]});
 const deleteUser = async(req, res) => {
   const id = req.params.id;
 try{
-await sql.connect(config);
+await sql.connect(confiq);
 await sql.query(`DELETE FROM users WHERE id = ${id}` )
 res.status(200).json({
   status:"success",
@@ -86,10 +86,28 @@ res.status(200).json({
 res.status(400).json(err)
 }
 }
+
+const getUsersGroup = async (req,res)=>{
+const id = req.params.id;
+console.log('working fine');
+try{
+let pool = await sql.connect(confiq);
+const group= await pool.request()
+.input('id',sql.Int,id)
+.query('SELECT * FROM phonebookgroup WHERE id = @id');
+!group.recordset[0]?res.status(404).json({message:"group not found fort user"}):res.status(200).json({status:'success',
+group:groupOne.recordset[0]
+})
+}catch(err){
+res.status(404).json(err)
+}
+}
+
 module.exports = 
 {
      createUser,
      getUsers,
      getUser,
-     deleteUser
+     deleteUser,
+     getUsersGroup
 }
