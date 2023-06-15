@@ -1,6 +1,7 @@
 const sql = require("mssql");
 const confiq = require("../db/config");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const createUser = async (req, res) => {
   const {
@@ -43,6 +44,50 @@ const createUser = async (req, res) => {
     sql.close();
   }
 };
+
+
+
+
+
+const loginUser = async(req,res,next)=>{
+  try{
+const {email,password} = req.body;
+//connection
+  let pool = await sql.connect(confiq);
+  const getUser = await pool.request()
+  .input('email',sql.VarChar,email)
+  .input('password',sql.VarChar,password)
+  .query('SELECT * FROM users WHERE email = @email')
+
+  const user = getUser.recordset[0];
+  if(!user){
+    res.status(404).json({
+      message:'user not dound'
+    })
+  }else{
+    //check passowrd
+   const pass =  bcrypt.compareSync(password, user.password)
+   if(pass){
+    // res.status(404).json({message:"wrong creditials"})
+const tk = jwt.sign({email:user.email,fullNames:user.fullNames},process.env.JWT_SECRET,{expiresIn:process.env.EXPIRY});
+const {password,...info} = user;
+res.status(200).json({
+  status:"success",
+  info,
+  token:tk
+})
+   }else{
+    //create token
+    res.status(404).json({message:"wrong creditials"})
+
+   }
+  }
+}catch(err){
+console.log('user not found')
+}
+
+}
+
 
 const getUsers = async(req,res)=>{
     try{
@@ -109,5 +154,6 @@ module.exports =
      getUsers,
      getUser,
      deleteUser,
-     getUsersGroup
+     getUsersGroup,
+     loginUser
 }
